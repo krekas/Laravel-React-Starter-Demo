@@ -12,18 +12,21 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import Dashboard from '@actions/App/Http/Controllers/DashboardController';
+import { index as IndexTasks } from '@actions/App/Http/Controllers/TaskController';
+import TaskCategoryController from '@actions/App/Http/Controllers/TaskCategoryController';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: '/dashboard' },
-    { title: 'Tasks', href: '/tasks' },
-    { title: 'Task Categories', href: '/task-categories' },
+    { title: 'Dashboard', href: Dashboard.url() },
+    { title: 'Tasks', href: IndexTasks.url() },
+    { title: 'Task Categories', href: TaskCategoryController.index.url() },
 ];
 
 export default function Index({ taskCategories }: { taskCategories: PaginatedResponse<TaskCategory> }) {
     const deleteTaskCategory = (taskCategory: TaskCategory) => {
         if (taskCategory.tasks_count === 0) {
             if (confirm('Are you sure you want to delete this task category?')) {
-                router.delete(route('task-categories.destroy', taskCategory.id));
+                router.delete(TaskCategoryController.destroy.url({ task_category: taskCategory.id }));
                 toast.success('Task Category deleted successfully');
             }
         } else {
@@ -32,7 +35,7 @@ export default function Index({ taskCategories }: { taskCategories: PaginatedRes
                     'This category has tasks assigned to it. Are you sure you want to delete it? This will also delete all the tasks assigned to this category.',
                 )
             ) {
-                router.delete(route('task-categories.destroy', taskCategory.id));
+                router.delete(TaskCategoryController.destroy.url({ task_category: taskCategory.id }));
                 toast.success('Task Category deleted successfully');
             }
         }
@@ -43,7 +46,7 @@ export default function Index({ taskCategories }: { taskCategories: PaginatedRes
             <Head title="Category List" />
             <div className={'mt-8'}>
                 <div className={'flex flex-row gap-x-4'}>
-                    <Link className={buttonVariants({ variant: 'default' })} href="/task-categories/create">
+                    <Link className={buttonVariants({ variant: 'default' })} href={TaskCategoryController.create.url()}>
                         Create Category
                     </Link>
                 </div>
@@ -61,7 +64,7 @@ export default function Index({ taskCategories }: { taskCategories: PaginatedRes
                                 <TableCell>{taskCategory.name}</TableCell>
                                 <TableCell>{taskCategory.tasks_count}</TableCell>
                                 <TableCell className="flex flex-row gap-x-2 text-right">
-                                    <Link className={buttonVariants({ variant: 'default' })} href={`/task-categories/${taskCategory.id}/edit`}>
+                                    <Link className={buttonVariants({ variant: 'default' })} href={TaskCategoryController.edit.url({ task_category: taskCategory.id })}>
                                         Edit
                                     </Link>
                                     <Button variant={'destructive'} className={'cursor-pointer'} onClick={() => deleteTaskCategory(taskCategory)}>

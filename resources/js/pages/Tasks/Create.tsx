@@ -9,6 +9,8 @@ import { type BreadcrumbItem, type TaskCategory } from '@/types';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { format } from 'date-fns';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import tasks from '@routes/tasks';
+import { dashboard } from '@routes/dashboard';
 
 type CreateTaskForm = {
     name?: string,
@@ -18,9 +20,9 @@ type CreateTaskForm = {
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: '/dashboard' },
-    { title: 'Tasks', href: '/tasks' },
-    { title: 'Create', href: '/tasks' },
+    { title: 'Dashboard', href: dashboard.url() },
+    { title: 'Tasks', href: tasks.index.url() },
+    { title: 'Create', href: tasks.create.url() },
 ];
 
 export default function Create({ categories }: { categories: TaskCategory[] }) {
@@ -36,7 +38,7 @@ export default function Create({ categories }: { categories: TaskCategory[] }) {
     const createTask: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('tasks.store'), {
+        post(tasks.store.url(), {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {

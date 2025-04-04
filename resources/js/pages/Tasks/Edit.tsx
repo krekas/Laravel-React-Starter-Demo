@@ -9,6 +9,8 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 import { format } from 'date-fns';
+import tasks from '@routes/tasks';
+import { dashboard } from '@routes/dashboard';
 
 type EditTaskForm = {
     name: string;
@@ -19,8 +21,8 @@ type EditTaskForm = {
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: '/dashboard' },
-    { title: 'Tasks', href: '/tasks' },
+    { title: 'Dashboard', href: dashboard.url() },
+    { title: 'Tasks', href: tasks.index.url() },
     { title: 'Edit', href: '' },
 ];
 
@@ -39,7 +41,7 @@ export default function Edit({ task, categories }: { task: Task, categories: Tas
         e.preventDefault();
 
         router.post(
-            route('tasks.update', task.id),
+            tasks.update.url({ task: task.id }),
             { ...data, _method: 'PUT' },
             {
                 forceFormData: true,

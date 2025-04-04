@@ -13,10 +13,13 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { TablePagination } from '@/components/table-pagination';
 import { format } from 'date-fns';
+import TasksRoutes from '@routes/tasks';
+import { index as IndexCategories } from '@routes/task-categories';
+import { dashboard } from '@routes/dashboard';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: '/dashboard' },
-    { title: 'Tasks', href: '/tasks' },
+    { title: 'Dashboard', href: dashboard.url() },
+    { title: 'Tasks', href: TasksRoutes.index.url() },
 ];
 
 export default function Index({
@@ -30,7 +33,7 @@ export default function Index({
 }) {
     const deleteTask = (id: number) => {
         if (confirm('Are you sure?')) {
-            router.delete(route('tasks.destroy', { id }));
+            router.delete(TasksRoutes.destroy.url({ task: id }));
             toast.success('Task deleted successfully');
         }
     };
@@ -39,7 +42,7 @@ export default function Index({
         const selected = selectedCategories?.includes(id)
             ? selectedCategories?.filter((category) => category !== id)
             : [...(selectedCategories || []), id];
-        router.visit('/tasks', { data: { categories: selected } });
+        router.visit(TasksRoutes.index.url(), { data: { categories: selected } });
     };
 
     return (
@@ -47,10 +50,10 @@ export default function Index({
             <Head title="Tasks List" />
             <div className={'mt-8'}>
                 <div className={'flex flex-row gap-x-4'}>
-                    <Link className={buttonVariants({ variant: 'default' })} href="/tasks/create">
+                    <Link className={buttonVariants({ variant: 'default' })} href={TasksRoutes.create.url()}>
                         Create Task
                     </Link>
-                    <Link className={buttonVariants({ variant: 'outline' })} href="/task-categories">
+                    <Link className={buttonVariants({ variant: 'outline' })} href={IndexCategories.url()}>
                         Manage Task Categories
                     </Link>
                 </div>
@@ -82,15 +85,14 @@ export default function Index({
                         {tasks.data.map((task: Task) => (
                             <TableRow key={task.id}>
                                 <TableCell>{task.name}</TableCell>
-                                <TableCell>{
-                                    !task.mediaFile
-                                        ? ''
-                                        : (
-                                            <a href={task.mediaFile.original_url} target="_blank">
-                                                <img src={task.mediaFile.original_url} className={'w-8 h-8'} />
-                                            </a>
-                                        )
-                                }
+                                <TableCell>
+                                    {!task.mediaFile ? (
+                                        ''
+                                    ) : (
+                                        <a href={task.mediaFile.original_url} target="_blank">
+                                            <img src={task.mediaFile.original_url} className={'h-8 w-8'} />
+                                        </a>
+                                    )}
                                 </TableCell>
                                 <TableCell className={'flex flex-row gap-x-2'}>
                                     {task.task_categories?.map((category: TaskCategory) => (
@@ -104,12 +106,10 @@ export default function Index({
                                 </TableCell>
                                 <TableCell>{task.due_date ? format(task.due_date, 'PPP') : ''}</TableCell>
                                 <TableCell className="flex flex-row gap-x-2 text-right">
-                                    <Link className={buttonVariants({ variant: 'default' })}
-                                          href={`/tasks/${task.id}/edit`}>
+                                    <Link className={buttonVariants({ variant: 'default' })} href={TasksRoutes.edit.url({ task: task.id })}>
                                         Edit
                                     </Link>
-                                    <Button variant={'destructive'} className={'cursor-pointer'}
-                                            onClick={() => deleteTask(task.id)}>
+                                    <Button variant={'destructive'} className={'cursor-pointer'} onClick={() => deleteTask(task.id)}>
                                         Delete
                                     </Button>
                                 </TableCell>

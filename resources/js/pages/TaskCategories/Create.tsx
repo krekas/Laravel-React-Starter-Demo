@@ -6,12 +6,15 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
+import Dashboard from '@actions/App/Http/Controllers/DashboardController';
+import { index as IndexTasks } from '@actions/App/Http/Controllers/TaskController';
+import TaskCategoryController from '@actions/App/Http/Controllers/TaskCategoryController';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: '/dashboard' },
-    { title: 'Tasks', href: '/tasks' },
-    { title: 'Task Categories', href: '/task-categories' },
-    { title: 'Create', href: '/task-categories/create' },
+    { title: 'Dashboard', href: Dashboard.url() },
+    { title: 'Tasks', href: IndexTasks.url() },
+    { title: 'Task Categories', href: TaskCategoryController.index.url() },
+    { title: 'Create', href: TaskCategoryController.create.url() },
 ];
 
 type CreateTaskCategoryForm = {
@@ -28,7 +31,7 @@ export default function Create() {
     const createTaskCategory: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('task-categories.store'), {
+        post(TaskCategoryController.store.url(), {
             preserveScroll: true,
             onSuccess: () => {
                 reset();

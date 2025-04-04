@@ -6,11 +6,14 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type TaskCategory } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
+import Dashboard from '@actions/App/Http/Controllers/DashboardController';
+import { index as IndexTasks } from '@actions/App/Http/Controllers/TaskController';
+import TaskCategoryController from '@actions/App/Http/Controllers/TaskCategoryController';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Dashboard', href: '/dashboard' },
-    { title: 'Tasks', href: '/tasks' },
-    { title: 'Task Categories', href: '/task-categories' },
+    { title: 'Dashboard', href: Dashboard.url() },
+    { title: 'Tasks', href: IndexTasks.url() },
+    { title: 'Task Categories', href: TaskCategoryController.index.url() },
     { title: 'Edit', href: '' },
 ];
 
@@ -28,7 +31,7 @@ export default function Edit({ taskCategory }: { taskCategory: TaskCategory }) {
     const createTaskCategory: FormEventHandler = (e) => {
         e.preventDefault();
 
-        put(route('task-categories.update', taskCategory.id), {
+        put(TaskCategoryController.update.url({ task_category: taskCategory.id}), {
             preserveScroll: true,
             onSuccess: () => {
                 reset();
