@@ -26,16 +26,16 @@ export default function Dashboard({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border py-4">
+                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 py-4 dark:border-sidebar-border">
                         <Doughnut data={completedVsPendingTaskChart} className={'mx-auto'} />
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex aspect-video flex-col items-center justify-start overflow-hidden rounded-xl border py-4">
+                    <div className="relative flex aspect-video flex-col items-center justify-start overflow-hidden rounded-xl border border-sidebar-border/70 py-4 dark:border-sidebar-border">
                         <h2 className={'text-center text-3xl font-bold'}>Tasks Due Today</h2>
                         <p className={'mt-auto mb-auto text-xl'}>{pendingTasksToday} task(-s) due today.</p>
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex aspect-video flex-col items-center justify-start overflow-hidden rounded-xl border py-4">
+                    <div className="relative flex aspect-video flex-col items-center justify-start overflow-hidden rounded-xl border border-sidebar-border/70 py-4 dark:border-sidebar-border">
                         <h2 className={'text-center text-3xl font-bold'}>Tasks This Week</h2>
                         <Bar data={tasksCreatedByDay} className={'mx-auto'} />
                     </div>

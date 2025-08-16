@@ -36,13 +36,7 @@ export default function Edit({ taskCategory }: { taskCategory: TaskCategory }) {
                             <div className="grid gap-2">
                                 <Label htmlFor="name">Name *</Label>
 
-                                <Input
-                                    id="name"
-                                    name="name"
-                                    defaultValue={taskCategory.name}
-                                    required
-                                    className="mt-1 block w-full"
-                                />
+                                <Input id="name" name="name" defaultValue={taskCategory.name} required className="mt-1 block w-full" />
 
                                 <InputError message={errors.name} />
                             </div>

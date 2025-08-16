@@ -1,18 +1,11 @@
-import AppLayout from '@/layouts/app-layout';
-import { Head, Link, router } from '@inertiajs/react';
-import { type BreadcrumbItem, type PaginatedResponse, type Task, type TaskCategory } from '@/types';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import { Button, buttonVariants } from '@/components/ui/button';
-import { toast } from 'sonner';
 import { TablePagination } from '@/components/table-pagination';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem, type PaginatedResponse, type Task, type TaskCategory } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
@@ -24,9 +17,9 @@ export default function Index({
     categories,
     selectedCategories,
 }: {
-    tasks: PaginatedResponse<Task>,
-    categories: TaskCategory[],
-    selectedCategories: string[] | null,
+    tasks: PaginatedResponse<Task>;
+    categories: TaskCategory[];
+    selectedCategories: string[] | null;
 }) {
     const deleteTask = (id: number) => {
         if (confirm('Are you sure?')) {
@@ -82,15 +75,14 @@ export default function Index({
                         {tasks.data.map((task: Task) => (
                             <TableRow key={task.id}>
                                 <TableCell>{task.name}</TableCell>
-                                <TableCell>{
-                                    !task.mediaFile
-                                        ? ''
-                                        : (
-                                            <a href={task.mediaFile.original_url} target="_blank">
-                                                <img src={task.mediaFile.original_url} className={'w-8 h-8'} />
-                                            </a>
-                                        )
-                                }
+                                <TableCell>
+                                    {!task.mediaFile ? (
+                                        ''
+                                    ) : (
+                                        <a href={task.mediaFile.original_url} target="_blank">
+                                            <img src={task.mediaFile.original_url} className={'h-8 w-8'} />
+                                        </a>
+                                    )}
                                 </TableCell>
                                 <TableCell className={'flex flex-row gap-x-2'}>
                                     {task.task_categories?.map((category: TaskCategory) => (
@@ -104,12 +96,10 @@ export default function Index({
                                 </TableCell>
                                 <TableCell>{task.due_date ? format(task.due_date, 'PPP') : ''}</TableCell>
                                 <TableCell className="flex flex-row gap-x-2 text-right">
-                                    <Link className={buttonVariants({ variant: 'default' })}
-                                          href={`/tasks/${task.id}/edit`}>
+                                    <Link className={buttonVariants({ variant: 'default' })} href={`/tasks/${task.id}/edit`}>
                                         Edit
                                     </Link>
-                                    <Button variant={'destructive'} className={'cursor-pointer'}
-                                            onClick={() => deleteTask(task.id)}>
+                                    <Button variant={'destructive'} className={'cursor-pointer'} onClick={() => deleteTask(task.id)}>
                                         Delete
                                     </Button>
                                 </TableCell>

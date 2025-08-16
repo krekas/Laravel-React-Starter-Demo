@@ -1,17 +1,10 @@
-import AppLayout from '@/layouts/app-layout'
-import { Head, Link, router } from '@inertiajs/react';
-import { type BreadcrumbItem, type PaginatedResponse, type TaskCategory } from '@/types';
-import { Button, buttonVariants } from '@/components/ui/button';
 import { TablePagination } from '@/components/table-pagination';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem, type PaginatedResponse, type TaskCategory } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { toast } from 'sonner';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },

@@ -1,13 +1,13 @@
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AppLayout from '@/layouts/app-layout';
-import { Head, Form } from '@inertiajs/react';
-import { useRef, useState } from 'react';
-import { type BreadcrumbItem, type TaskCategory } from '@/types';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem, type TaskCategory } from '@/types';
+import { Form, Head } from '@inertiajs/react';
+import { useRef, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
@@ -26,7 +26,7 @@ export default function Create({ categories }: { categories: TaskCategory[] }) {
                 <Form
                     method="post"
                     action={route('tasks.store')}
-                    transform={data => ({ ...data, categories: selectedCategories })}
+                    transform={(data) => ({ ...data, categories: selectedCategories })}
                     onError={(errors) => {
                         if (errors.name) {
                             taskName.current?.focus();
@@ -36,7 +36,7 @@ export default function Create({ categories }: { categories: TaskCategory[] }) {
                 >
                     {({ processing, progress, errors }) => (
                         <Card>
-                            <CardContent className="space-y-6 grid grid-cols-3 gap-4">
+                            <CardContent className="grid grid-cols-3 gap-4 space-y-6">
                                 <div className="grid gap-2">
                                     <Label htmlFor="name">Task Name *</Label>
 
@@ -48,12 +48,7 @@ export default function Create({ categories }: { categories: TaskCategory[] }) {
                                 <div className="grid gap-2">
                                     <Label htmlFor="name">Due Date</Label>
 
-                                    <Input
-                                        id="due_date"
-                                        name="due_date"
-                                        className="mt-1 block w-full"
-                                        type="date"
-                                    />
+                                    <Input id="due_date" name="due_date" className="mt-1 block w-full" type="date" />
 
                                     <InputError message={errors.due_date} />
                                 </div>
@@ -61,12 +56,7 @@ export default function Create({ categories }: { categories: TaskCategory[] }) {
                                 <div className="grid gap-2">
                                     <Label htmlFor="media">Media</Label>
 
-                                    <Input
-                                        id="media"
-                                        name="media"
-                                        className="mt-1 block w-full"
-                                        type="file"
-                                    />
+                                    <Input id="media" name="media" className="mt-1 block w-full" type="file" />
 
                                     {progress && (
                                         <progress value={progress.percentage} max="100">
@@ -80,7 +70,12 @@ export default function Create({ categories }: { categories: TaskCategory[] }) {
                                 <div className="grid gap-2">
                                     <Label htmlFor="categories">Categories</Label>
 
-                                    <ToggleGroup type="multiple" variant={'outline'} size={'lg'} onValueChange={(value) => setSelectedCategories(value)}>
+                                    <ToggleGroup
+                                        type="multiple"
+                                        variant={'outline'}
+                                        size={'lg'}
+                                        onValueChange={(value) => setSelectedCategories(value)}
+                                    >
                                         {categories.map((category) => (
                                             <ToggleGroupItem key={category.id} value={category.id.toString()}>
                                                 {category.name}
