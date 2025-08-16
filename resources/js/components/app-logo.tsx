@@ -7,7 +7,7 @@ export default function AppLogo() {
                 <AppLogoIcon className="size-5 fill-current text-blue-100 dark:text-black" />
             </div>
             <div className="ml-1 grid flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate leading-none font-semibold text-blue-800">React Tasks</span>
+                <span className="mb-0.5 truncate leading-tight font-semibold text-blue-800">React Tasks</span>
             </div>
         </>
     );
