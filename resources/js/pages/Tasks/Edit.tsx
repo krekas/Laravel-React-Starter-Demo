@@ -1,22 +1,14 @@
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Task, type TaskCategory } from '@/types';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Head, router, useForm } from '@inertiajs/react';
-import { FormEventHandler, useRef } from 'react';
+import { Form, Head } from '@inertiajs/react';
+import { useRef, useState } from 'react';
 import { format } from 'date-fns';
-
-type EditTaskForm = {
-    name: string;
-    is_completed: boolean;
-    due_date?: string;
-    media?: string;
-    categories: string[];
-};
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
@@ -26,119 +18,105 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Edit({ task, categories }: { task: Task, categories: TaskCategory[] }) {
     const taskName = useRef<HTMLInputElement>(null);
+    const [isCompleted, setIsCompleted] = useState<boolean>(task.is_completed);
+    const [selectedCategories, setSelectedCategories] = useState<number[]>(task.task_categories.map(category => category.id));
 
-    const { data, setData, errors, reset, processing, progress } = useForm<EditTaskForm>({
-        name: task.name,
-        is_completed: task.is_completed,
-        due_date: task.due_date,
-        media: '',
-        categories: task.task_categories.map((category) => category.id.toString()),
-    });
-
-    const editTask: FormEventHandler = (e) => {
-        e.preventDefault();
-
-        router.post(
-            route('tasks.update', task.id),
-            { ...data, _method: 'PUT' },
-            {
-                forceFormData: true,
-                preserveScroll: true,
-                onSuccess: () => {
-                    reset();
-                },
-                onError: (errors) => {
-                    if (errors.name) {
-                        reset('name');
-                        taskName.current?.focus();
-                    }
-                },
-            },
-        );
-    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Task" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <form onSubmit={editTask} className="space-y-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="name">Task Name</Label>
+                <Form
+                    method="post"
+                    action={route('tasks.update', task.id)}
+                    transform={data => ({ ...data, _method: 'put' })}
+                    className="space-y-6"
+                >
+                    {({ processing, progress, errors }) => (
+                        <>
+                            <div className="grid gap-2">
+                                <Label htmlFor="name">Task Name</Label>
 
-                        <Input
-                            id="name"
-                            ref={taskName}
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                            className="mt-1 block w-full"
-                        />
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    ref={taskName}
+                                    defaultValue={task.name}
+                                    className="mt-1 block w-full"
+                                />
 
-                        <InputError message={errors.name} />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="is_completed">Completed?</Label>
+                                <InputError message={errors.name} />
+                            </div>
 
-                        <Checkbox checked={data.is_completed}
-                                  onCheckedChange={() => setData('is_completed', !data.is_completed)} />
+                            <div className="grid gap-2">
+                                <Label htmlFor="is_completed">Completed?</Label>
 
-                        <InputError message={errors.is_completed} />
-                    </div>
+                                <Switch
+                                    checked={isCompleted}
+                                    id="is_completed"
+                                    name="is_completed"
+                                    onCheckedChange={(checked) => setIsCompleted(checked === true)}
+                                />
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="name">Due Date</Label>
+                                <InputError message={errors.is_completed} />
+                            </div>
 
-                        <Input
-                            id="due_date"
-                            value={data.due_date ? format(data.due_date, 'yyyy-MM-dd') : ''}
-                            onChange={(e) => setData('due_date', format(new Date(e.target.value), 'yyyy-MM-dd'))}
-                            className="mt-1 block w-full"
-                            type="date"
-                        />
+                            <div className="grid gap-2">
+                                <Label htmlFor="name">Due Date</Label>
 
-                        <InputError message={errors.due_date} />
-                    </div>
+                                <Input
+                                    id="due_date"
+                                    name="due_date"
+                                    defaultValue={task.due_date ? format(task.due_date, 'yyyy-MM-dd') : ''}
+                                    className="mt-1 block w-full"
+                                    type="date"
+                                />
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="media">Media</Label>
+                                <InputError message={errors.due_date} />
+                            </div>
 
-                        <Input
-                            id="media"
-                            onChange={(e) => setData('media', e.target.files[0])}
-                            className="mt-1 block w-full"
-                            type="file"
-                        />
+                            <div className="grid gap-2">
+                                <Label htmlFor="media">Media</Label>
 
-                        {progress && (
-                            <progress value={progress.percentage} max="100">
-                                {progress.percentage}%
-                            </progress>
-                        )}
+                                <Input
+                                    id="media"
+                                    name="media"
+                                    className="mt-1 block w-full"
+                                    type="file"
+                                />
 
-                        <InputError message={errors.media} />
+                                {progress && (
+                                    <progress value={progress.percentage} max="100">
+                                        {progress.percentage}%
+                                    </progress>
+                                )}
 
-                        {!task.mediaFile ? '' : (
-                            <a href={task.mediaFile.original_url} target="_blank" className="my-4 mx-auto"><img
-                                src={task.mediaFile.original_url} className={'w-32 h-32'} /></a>)}
-                    </div>
+                                <InputError message={errors.media} />
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="due_date">Categories</Label>
+                                {!task.mediaFile ? '' : (
+                                    <a href={task.mediaFile.original_url} target="_blank" className="my-4 mx-auto"><img
+                                        src={task.mediaFile.original_url} className={'w-32 h-32'} /></a>)}
+                            </div>
 
-                        <ToggleGroup type="multiple" variant={'outline'} size={'lg'} value={data.categories}
-                                     onValueChange={(value) => setData('categories', value)}>
-                            {categories.map((category) => (
-                                <ToggleGroupItem key={category.id} value={category.id.toString()}>
-                                    {category.name}
-                                </ToggleGroupItem>
-                            ))}
-                        </ToggleGroup>
+                            <div className="grid gap-2">
+                                <Label htmlFor="categories">Categories</Label>
 
-                        <InputError message={errors.due_date} />
-                    </div>
+                                <ToggleGroup type="multiple" variant={'outline'} size={'lg'} value={selectedCategories.toString()} onValueChange={(value) => setSelectedCategories(value)}>
+                                    {categories.map((category) => (
+                                        <ToggleGroupItem key={category.id} value={category.id.toString()}>
+                                            {category.name}
+                                        </ToggleGroupItem>
+                                    ))}
+                                </ToggleGroup>
 
-                    <div className="flex items-center gap-4">
-                        <Button disabled={processing}>Update Task</Button>
-                    </div>
-                </form>
+                                <InputError message={errors.categories} />
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                                <Button disabled={processing}>Update Task</Button>
+                            </div>
+                        </>
+                    )}
+                </Form>
             </div>
         </AppLayout>
     );

@@ -30,4 +30,11 @@ class UpdateTaskRequest extends FormRequest
             'categories.*' => ['exists:task_categories,id'],
         ];
     }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_completed' => $this->boolean('is_completed'),
+        ]);
+    }
 }
